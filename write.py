@@ -79,9 +79,15 @@ if __name__ == "__main__":
                         print("")
                 print("")    
             print(f"disconnecting from {peripheral.identifier()}")
+
+            #write to the uuid and send payload
+            uuid, payload = input("write: [uuid] [payload] ").split()
+            for service in services:
+            
             peripheral.disconnect()
             print("disconnected")
             
+
             
     
         case 2: 
