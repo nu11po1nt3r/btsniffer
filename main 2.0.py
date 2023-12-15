@@ -1,7 +1,8 @@
 import simplepyble
 
-if __name__ == "__main__":
-    adapters = simplepyble.Adapter.get_adapters() 
+def sendPayload():
+    if __name__ == "__main__":
+        adapters = simplepyble.Adapter.get_adapters() 
   
     if len(adapters) == 0:
         print("No adapters found")
@@ -15,35 +16,17 @@ if __name__ == "__main__":
     print(f"{i+1} adapter(s) found.\n") 
     
     adapter = adapters[0]
+    peripherals = adapter.scan_get_results() #get peripherals
     
+    for i, peripheral in enumerate(peripherals):
+        print(f"{i} id: {peripheral.identifier()} address: {peripheral.address()}")
+
+     #Query the user to pick a peripheral
+        choice = int(input("peripheral id: "))
     
-    print("[1] scan")
-    print("[2] adapter info")
-    print("[0] exit ")
-    parameter = int(input(" "))
-
-
-    match parameter:
-
-        case 0:
-            print("goodbye")
-            exit()
-
-        case 1:
-            print(f"Selected adapter: {adapter.identifier()} {adapter.address()}")
-            adapter.set_callback_on_scan_start(lambda: print("Scan started."))
-            adapter.scan_for(10000) # scan for 5 seconds
-            adapter.set_callback_on_scan_stop(lambda: print("Scan complete."))
-            peripherals = adapter.scan_get_results() #get peripherals
-    
-            for i, peripheral in enumerate(peripherals):
-                print(f"{i} id: {peripheral.identifier()} address: {peripheral.address()}")
-
-            #Query the user to pick a peripheral
-            choice = int(input("peripheral id: "))          
+            
             peripheral = peripherals[choice]  
             peripheral.connect()
-            
             print("\n")    
             print(f"{peripheral.identifier()} details:")
             print(f"address: {peripheral.address()}")
@@ -74,12 +57,19 @@ if __name__ == "__main__":
             
                     for descriptor in characteristic.descriptors():
                         print(f"\t\tdescriptors: {descriptor.uuid()}")
+                        print(f"\t\tdata: {bytes(peripheral.descriptor_read(service.uuid(), characteristic.uuid(), descriptor.uuid()))}")
                         print("")
                 print("")    
             print(f"disconnecting from {peripheral.identifier()}")
+
+            #write to the uuid and send payload
+            uuid, payload = input("write: [uuid] [payload] ").split()
+            for service in services:
+            
             peripheral.disconnect()
             print("disconnected")
             
+
             
     
         case 2: 
