@@ -43,10 +43,14 @@ if __name__ == "__main__":
             choice = int(input("peripheral id: "))          
             peripheral = peripherals[choice]  
 
-            if(peripheral.connect() == 0):
-              print(f"could not connect to {choice}")
-            
-            peripheral = peripherals[choice]  
+            try: 
+                peripheral.connect()
+            except TypeError:
+                    print(f"couldn't connect {peripheral}")
+            except RuntimeError:
+                    print(f"couldn't connect to {peripheral}")
+            else:
+               print(f"connecting to {peripheral}") 
 
             print("\n")    
             print(f"{peripheral.identifier()} details:")
@@ -58,6 +62,15 @@ if __name__ == "__main__":
             print(f"connected: {peripheral.is_connected()}")
             print(f"connectable: {peripheral.is_connectable()}")
             print(f"manufacturer data: {peripheral.manufacturer_data()}")
+            #error handling for not compatible methods
+            try:
+                peripheral.is_paired()
+            except TypeError:
+                print("pairing info unavailable")
+            except RuntimeError:
+                print("pairing unavailable")
+            else:
+                print(f"paired: {peripheral.is_paired()}")
          
             
             #start service navigation
@@ -76,21 +89,33 @@ if __name__ == "__main__":
                 for characteristic in service.characteristics():
                     print(f"\tuuid: {characteristic.uuid()}\t")
                     #checks if the characteristic is readable
-                    print(f"\tdata: {bytes(peripheral.read(service.uuid(), characteristic.uuid()))}")
+                    try: 
+                        peripheral.read(service.uuid(), characteristic.uuid())
+                    except TypeError:
+                        print("\t operation unable")
+                    except RuntimeError:
+                        print("\t operation unable")
+                    else:
+                        print(f"\tdata: {peripheral.read(service.uuid(), characteristic.uuid())}")
+                        
                     
                     print(f"\t({len(characteristic.descriptors())}) descriptor(s) found: ")
                     for descriptor in characteristic.descriptors():
                         print(f"\t\tdescriptors: {descriptor.uuid()}")
-                        if (peripheral.descriptor_read() != None):
-                            print(f"\t\tdata: {bytes(peripheral.descriptor_read(service.uuid(), characteristic.uuid(), descriptor.uuid()))}")
+                        try:
+                            peripheral.descriptor_read(service.uuid(), characteristic.uuid(), descriptor.uuid())
+                        except TypeError:
+                            print("TypeError: operation unable")
+                        except RuntimeError:
+                            print("RunTimeError: operation unable")
+                            
                         else:
-                            print("No descriptor data found")
+                            print(f"\t\tdata: {peripheral.descriptor_read(service.uuid(), characteristic.uuid(), descriptor.uuid())}")
                 print("")    
             print(f"disconnecting from {peripheral.identifier()}")
             peripheral.disconnect()
             print("disconnected")
                         
-    
         case 2: 
             for i, adapter in enumerate(adapters):
                 print(f"adapter id: {adapter.identifier()}")
@@ -106,5 +131,4 @@ if __name__ == "__main__":
        
     
     
-
 
