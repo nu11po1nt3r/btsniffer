@@ -42,7 +42,11 @@ if __name__ == "__main__":
             #Query the user to pick a peripheral
             choice = int(input("peripheral id: "))          
             peripheral = peripherals[choice]  
-            peripheral.connect()
+
+            if(peripheral.connect() == 0):
+              print(f"could not connect to {choice}")
+            
+            peripheral = peripherals[choice]  
 
             print("\n")    
             print(f"{peripheral.identifier()} details:")
@@ -53,10 +57,10 @@ if __name__ == "__main__":
             print(f"mtu: {peripheral.mtu()}")
             print(f"connected: {peripheral.is_connected()}")
             print(f"connectable: {peripheral.is_connectable()}")
-            print(f"manufacturer data: {bytes(peripheral.manufacturer_data())}")
-            if (peripheral.is_paired != None):
-                print(f"paired: {peripheral.is_paired()}")
-          
+            print(f"manufacturer data: {peripheral.manufacturer_data()}")
+         
+            
+            #start service navigation
             services = peripheral.services()
             service_characteristic_pair = []
             print(" ")
@@ -68,13 +72,13 @@ if __name__ == "__main__":
     
                 print(f"service id: {service.uuid()}")
                 print(f"({len(service.characteristics())}) characteristics found:")
-            #print(f"characteristics: {(service.characteristics())}")
+            
                 for characteristic in service.characteristics():
                     print(f"\tuuid: {characteristic.uuid()}\t")
-                    if peripheral.read(service.uuid(), characteristic.uuid()) != None:
-                        print(f"\tdata: {bytes(peripheral.read(service.uuid(), characteristic.uuid()))}")
+                    #checks if the characteristic is readable
+                    print(f"\tdata: {bytes(peripheral.read(service.uuid(), characteristic.uuid()))}")
+                    
                     print(f"\t({len(characteristic.descriptors())}) descriptor(s) found: ")
-            
                     for descriptor in characteristic.descriptors():
                         print(f"\t\tdescriptors: {descriptor.uuid()}")
                         if (peripheral.descriptor_read() != None):
