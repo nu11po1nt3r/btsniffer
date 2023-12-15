@@ -57,11 +57,12 @@ if __name__ == "__main__":
             #print(f"characteristics: {(service.characteristics())}")
             for characteristic in service.characteristics():
                 print(f"\tuuid: {characteristic.uuid()}\t")
-                print(f"\tdata: {peripheral.read(service.uuid(), characteristic.uuid())}")
+                print(f"\tdata: {bytes(peripheral.read(service.uuid(), characteristic.uuid()))}")
                 print(f"\t({len(characteristic.descriptors())}) descriptor(s) found: ")
                
                 for descriptor in characteristic.descriptors():
                     print(f"\t\tdescriptors: {descriptor.uuid()}")
+                    print(f"\t\tdata: {bytes(peripheral.descriptor_read(service.uuid(), characteristic.uuid(), descriptor.uuid()))}")
                     print("")
             print("")    
         print(f"disconnecting from {peripheral.identifier()}")
