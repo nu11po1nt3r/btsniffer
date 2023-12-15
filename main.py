@@ -43,7 +43,7 @@ if __name__ == "__main__":
             choice = int(input("peripheral id: "))          
             peripheral = peripherals[choice]  
             peripheral.connect()
-            
+
             print("\n")    
             print(f"{peripheral.identifier()} details:")
             print(f"address: {peripheral.address()}")
@@ -54,7 +54,9 @@ if __name__ == "__main__":
             print(f"connected: {peripheral.is_connected()}")
             print(f"connectable: {peripheral.is_connectable()}")
             print(f"manufacturer data: {bytes(peripheral.manufacturer_data())}")
-                    
+            if (peripheral.is_paired != None):
+                print(f"paired: {peripheral.is_paired()}")
+          
             services = peripheral.services()
             service_characteristic_pair = []
             print(" ")
@@ -69,18 +71,21 @@ if __name__ == "__main__":
             #print(f"characteristics: {(service.characteristics())}")
                 for characteristic in service.characteristics():
                     print(f"\tuuid: {characteristic.uuid()}\t")
-                    print(f"\tdata: {bytes(peripheral.read(service.uuid(), characteristic.uuid()))}")
+                    if peripheral.read(service.uuid(), characteristic.uuid()) != None:
+                        print(f"\tdata: {bytes(peripheral.read(service.uuid(), characteristic.uuid()))}")
                     print(f"\t({len(characteristic.descriptors())}) descriptor(s) found: ")
             
                     for descriptor in characteristic.descriptors():
                         print(f"\t\tdescriptors: {descriptor.uuid()}")
-                        print("")
+                        if (peripheral.descriptor_read() != None):
+                            print(f"\t\tdata: {bytes(peripheral.descriptor_read(service.uuid(), characteristic.uuid(), descriptor.uuid()))}")
+                        else:
+                            print("No descriptor data found")
                 print("")    
             print(f"disconnecting from {peripheral.identifier()}")
             peripheral.disconnect()
             print("disconnected")
-            
-            
+                        
     
         case 2: 
             for i, adapter in enumerate(adapters):
