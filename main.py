@@ -92,22 +92,21 @@ if __name__ == "__main__":
                     try: 
                         peripheral.read(service.uuid(), characteristic.uuid())
                     except TypeError:
-                        print("\t operation unable")
+                        print("\t unreadable")
                     except RuntimeError:
-                        print("\t operation unable")
+                        print("\t unreadable")
                     else:
                         print(f"\tdata: {peripheral.read(service.uuid(), characteristic.uuid())}")
                         
-                    
                     print(f"\t({len(characteristic.descriptors())}) descriptor(s) found: ")
                     for descriptor in characteristic.descriptors():
                         print(f"\t\tdescriptors: {descriptor.uuid()}")
                         try:
                             peripheral.descriptor_read(service.uuid(), characteristic.uuid(), descriptor.uuid())
                         except TypeError:
-                            print("TypeError: operation unable")
+                            print("\t\tunreadable")
                         except RuntimeError:
-                            print("RunTimeError: operation unable")
+                            print("\t\tunreadable")
                             
                         else:
                             print(f"\t\tdata: {peripheral.descriptor_read(service.uuid(), characteristic.uuid(), descriptor.uuid())}")
