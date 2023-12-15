@@ -66,9 +66,9 @@ if __name__ == "__main__":
             try:
                 peripheral.is_paired()
             except TypeError:
-                print("pairing info unavailable")
+                print("pairing: N/A")
             except RuntimeError:
-                print("pairing unavailable")
+                print("pairing: N/A")
             else:
                 print(f"paired: {peripheral.is_paired()}")
          
