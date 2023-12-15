@@ -46,6 +46,7 @@ if __name__ == "__main__":
         services = peripheral.services()
         service_characteristic_pair = []
         print(" ")
+        
         print(f"({len(services)}) service(s) found:") 
         for service in services: #insert into service(s) array
             for characteristic in service.characteristics():

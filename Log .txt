@@ -5,9 +5,6 @@ service, characteristic
 2 - Device Name. 163728 (peripheral identifier) * GATT SERVICE
 3 - Apperance b'\x00\x00' (Status?)				*GATT SERVICE
 4 Peripheral Preferred Connection Parameters: b'P\x00\xa0\x00\x00\x00\x90\x01' *GATT SERVICE
-
- 
- 
  
 Device name
 Appearance
@@ -40,3 +37,6 @@ Read button data from the application.
 LED Characteristic (00001525-1212-EFDE-1523-785FEABCD123)
 Write:
 Write data to the LED Characteristic to change the LED state.
+
+When connected, the sample sends the state of Button 1 on the development kit to the connected device, such as a phone or tablet. 
+The mobile application on the device can display the received button state and control the state of LED 3 on the development kit.
