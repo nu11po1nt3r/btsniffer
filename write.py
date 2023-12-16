@@ -1,5 +1,9 @@
 import simplepyble
+from collections.abc import Iterable
 
+
+def notify(byte: Iterable[bytes]) -> None:
+    return byte
 
 def sendPayload():
 
@@ -11,7 +15,8 @@ def sendPayload():
 
     characteristicID2 = '00001525-1212-efde-1523-785feabcd111'
     #bytes obtained from DUMP...
-    payLoad2 = bytes('\x01\x00\x01\x00', 'utf-8')
+    payLoad2 = [bytes([char] * 8) for char in b'spam']
+    payLoadLen = len(payLoad2)
 
     if __name__ == "__main__":
         adapters = simplepyble.Adapter.get_adapters() 
@@ -34,7 +39,7 @@ def sendPayload():
     peripherals = adapter.scan_get_results() #get peripherals
     
     for i, peripheral in enumerate(peripherals):
-        print(f"{i} id: {peripheral.identifier()} address: {peripheral.address()}")
+        print(f"[{i}] \t{peripheral.address()} {peripheral.identifier()}")
     
     choice = int(input("peripheral id: "))         
     peripheral = peripherals[choice]  
@@ -89,7 +94,7 @@ def sendPayload():
         peripheral.descriptor_write(serviceID, characteristicID, descriptorID, bytes(payLoad))
         
         print(f"SENDING {payLoad2} to {characteristicID}")
-        peripheral.write_request(serviceID, characteristicID2, payLoad2)
+        peripheral.notify(serviceID, characteristicID2, iter(payLoad2))
 
         print("PAYLOAD SENT") 
         for service in services: #insert into service(s) array

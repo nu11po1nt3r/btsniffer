@@ -1,13 +1,17 @@
 import simplepyble
 import time
+import colorama
 from colorama import Fore, Back, Style
+
+#Initialize colorama
+colorama.init(autoreset=True) 
 
 def dump():
     adapters = simplepyble.Adapter.get_adapters() 
     adapter = adapters[0]
-    adapter.set_callback_on_scan_start(lambda: print("Scan started."))
-    adapter.scan_for(10000) # scan for 10 seconds
-    adapter.set_callback_on_scan_stop(lambda: print("Scan complete."))
+    adapter.set_callback_on_scan_start(lambda: print("scanning"))
+    adapter.scan_for(5000) # scan for 5 seconds
+    adapter.set_callback_on_scan_stop(lambda: print("scanned"))
     peripherals = adapter.scan_get_results() #get peripherals
     
     for i, peripheral in enumerate(peripherals):
@@ -36,6 +40,7 @@ def dump():
     print(f"connected: {peripheral.is_connected()}")
     print(f"connectable: {peripheral.is_connectable()}")
     print(f"manufacturer data: {peripheral.manufacturer_data()}")
+
     #error handling for not compatible methods
     try:
         peripheral.is_paired()
@@ -65,11 +70,11 @@ def dump():
             try: 
                 peripheral.read(service.uuid(), characteristic.uuid())
             except TypeError:
-                print("\t unreadable")
+                print(Fore.RED + "\t unreadable")
             except RuntimeError:
-                print("\t unreadable")
+                print(Fore.RED + "\t unreadable")
             else:
-                print(f"\tdata: {peripheral.read(service.uuid(), characteristic.uuid())}")
+                print(f"\t{peripheral.read(service.uuid(), characteristic.uuid())}")
                 
             print(f"\t({len(characteristic.descriptors())}) descriptor(s) found: ")
             for descriptor in characteristic.descriptors():
@@ -82,18 +87,20 @@ def dump():
                     print("\t\tunreadable")
                     
                 else:
-                    print(f"\t\tdata: {peripheral.descriptor_read(service.uuid(), characteristic.uuid(), descriptor.uuid())}")
+                    print(f"\t\t{peripheral.descriptor_read(service.uuid(), characteristic.uuid(), descriptor.uuid())}")
+                    print(f"\t\t length: {len(peripheral.descriptor_read(service.uuid(), characteristic.uuid(), descriptor.uuid()))}")
         print("")  
                 
 def scan():
     
     adapters = simplepyble.Adapter.get_adapters() 
     adapter = adapters[0]
-    adapter.set_callback_on_scan_start(lambda: print("Scan started."))
+    adapter.set_callback_on_scan_start(lambda: print("scanning"))
     adapter.scan_for(1000) # scan for one (1) second(s)
-    adapter.set_callback_on_scan_stop(lambda: print("Scan complete."))
+    adapter.set_callback_on_scan_stop(lambda: print("scanned"))
     peripherals = adapter.scan_get_results() #get peripherals
     
+    # tabbed formatting
     for i, peripheral in enumerate(peripherals):
         print(f"[{i}] \t{peripheral.address()} {peripheral.identifier()} ")
     
@@ -108,9 +115,9 @@ if __name__ == "__main__":
     adapters = simplepyble.Adapter.get_adapters() 
     adapter = adapters[0]
     print("\n")
-    adapter.set_callback_on_scan_start(lambda: print("Scan started."))
+    adapter.set_callback_on_scan_start(lambda: print("starting"))
     adapter.scan_for(10000) # scan for 10 seconds
-    adapter.set_callback_on_scan_stop(lambda: print("Scan complete."))
+    adapter.set_callback_on_scan_stop(lambda: print("ready"))
     peripherals = adapter.scan_get_results() #get peripherals
     
     print(f"Selected adapter: {adapter.identifier()} {adapter.address()}")
