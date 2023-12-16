@@ -10,7 +10,7 @@ def dump():
     peripherals = adapter.scan_get_results() #get peripherals
     
     for i, peripheral in enumerate(peripherals):
-        print(f"{i} id: {peripheral.identifier()} address: {peripheral.address()}")
+        print(f"[{i}] \t{peripheral.address()} {peripheral.identifier()} ")
     
     #Query the user to pick a peripheral    
     choice = input("Enter peripheral id: ")   
@@ -94,7 +94,7 @@ def scan():
     peripherals = adapter.scan_get_results() #get peripherals
     
     for i, peripheral in enumerate(peripherals):
-        print(f"{i} id: {peripheral.identifier()} address: {peripheral.address()}")
+        print(f"[{i}] \t{peripheral.address()} {peripheral.identifier()} ")
     
 def menu():
     print("\n")
