@@ -1,5 +1,6 @@
 import simplepyble
 import time
+from colorama import Fore, Back, Style
 
 def dump():
     adapters = simplepyble.Adapter.get_adapters() 
@@ -10,7 +11,7 @@ def dump():
     peripherals = adapter.scan_get_results() #get peripherals
     
     for i, peripheral in enumerate(peripherals):
-        print(f"{i} id: {peripheral.identifier()} address: {peripheral.address()}")
+        print(f"[{i}] \t{peripheral.address()} {peripheral.identifier()} ")
     
     #Query the user to pick a peripheral    
     choice = input("Enter peripheral id: ")   
@@ -89,7 +90,7 @@ def scan():
     adapters = simplepyble.Adapter.get_adapters() 
     adapter = adapters[0]
     adapter.set_callback_on_scan_start(lambda: print("Scan started."))
-    adapter.scan_for(10000) # scan for 10 seconds
+    adapter.scan_for(1000) # scan for one (1) second(s)
     adapter.set_callback_on_scan_stop(lambda: print("Scan complete."))
     peripherals = adapter.scan_get_results() #get peripherals
     
