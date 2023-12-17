@@ -10,13 +10,7 @@ def sendPayload():
     serviceID = '00001523-1212-efde-1523-785feabcd111'
     descriptorID = '00002902-0000-1000-8000-00805f9b34fb'
     characteristicID = '00001524-1212-efde-1523-785feabcd111'
-    payLoad = bytes('\x00\x01', 'utf-8')
-
-
-    characteristicID2 = '00001525-1212-efde-1523-785feabcd111'
-    #bytes obtained from DUMP...
-    payLoad2 = [bytes([char] * 8) for char in b'spam']
-    payLoadLen = len(payLoad2)
+    payLoad = bytes('\x0f\x0f', 'utf-8')
 
     if __name__ == "__main__":
         adapters = simplepyble.Adapter.get_adapters() 
@@ -93,9 +87,6 @@ def sendPayload():
         print(f"SENDING {payLoad} to {descriptorID}")
         peripheral.descriptor_write(serviceID, characteristicID, descriptorID, bytes(payLoad))
         
-        print(f"SENDING {payLoad2} to {characteristicID}")
-        peripheral.notify(serviceID, characteristicID2, iter(payLoad2))
-
         print("PAYLOAD SENT") 
         for service in services: #insert into service(s) array
             for characteristic in service.characteristics():
